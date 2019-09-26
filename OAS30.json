@@ -1,0 +1,1172 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "API Designer Management API",
+    "description" : "This is the documentation of Talend API Designer's management API.\n\n**Prerequisite:** To manipulate this API, your user account must at least have the `API Designer` role.",
+    "contact" : { },
+    "version" : "1.0.0"
+  },
+  "servers" : [ {
+    "url" : "${serverUrl}",
+    "description" : ""
+  } ],
+  "security" : [ {
+    "Personal Access Token" : [ ]
+  } ],
+  "paths" : {
+    "/api-definitions/{id}" : {
+      "get" : {
+        "summary" : "Fetch an API definition",
+        "description" : "Fetch an API definition in a specific format using its ID",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/format"
+        }, {
+          "$ref" : "#/components/parameters/talendExtensions"
+        }, {
+          "$ref" : "#/components/parameters/Accept"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Status 200",
+            "headers" : {
+              "X-Audit-Location" : {
+                "description" : "Contains the URL that allows the user to fetch the report of the export.\n\nAppears only if the report is not empty.",
+                "schema" : {
+                  "type" : "string",
+                  "description" : "Contains the URL that allows the user to fetch the report of the export.\n\nAppears only if the report is not empty."
+                },
+                "example" : "http://api.eu.talend.com/v1/api-definition/a609483f-72a5-4937-a1be-243cb507fffb/audit"
+              }
+            },
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/One%20of%20all%20API%20definition%20formats"
+                }
+              },
+              "application/x-yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/One%20of%20all%20API%20definition%20formats"
+                }
+              }
+            }
+          },
+          "400" : {
+            "$ref" : "#/components/responses/400%20-%20Generic"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/401%20-%20Generic"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/403%20-%20Generic"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/404%20-%20Generic"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/415%20-%20Designer"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/500%20-%20General"
+          }
+        }
+      },
+      "put" : {
+        "summary" : "Replace an existing API definition",
+        "description" : "Replace an existing API definition by another definition",
+        "parameters" : [ {
+          "name" : "format",
+          "in" : "query",
+          "description" : "The API definition format desired or passed in the input",
+          "schema" : {
+            "type" : "string",
+            "description" : "The API definition format desired or passed in the input",
+            "default" : "OpenApi3",
+            "enum" : [ "OpenApi3", "Swagger20", "Swagger12", "Raml10", "Raml08" ]
+          }
+        }, {
+          "$ref" : "#/components/parameters/failOnWarnings"
+        }, {
+          "$ref" : "#/components/parameters/mainFile"
+        }, {
+          "$ref" : "#/components/parameters/Content-Type"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/One%20of%20all%20API%20definition%20formats"
+              }
+            },
+            "application/x-yaml" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/One%20of%20all%20API%20definition%20formats"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Acknowledgement, the replacement is complete",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ApiDefinitionWriteResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "$ref" : "#/components/responses/400%20-%20Complete"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/401%20-%20Generic"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/403%20-%20Generic"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/404%20-%20Generic"
+          },
+          "412" : {
+            "$ref" : "#/components/responses/412%20-%20Fail%20on%20warnings"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/500%20-%20General"
+          }
+        }
+      },
+      "delete" : {
+        "summary" : "Delete an API definition",
+        "description" : "Delete an API definition using its ID",
+        "responses" : {
+          "204" : {
+            "description" : "Acknowledgement, the deletion is complete"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/400%20-%20API%20definition%20ID"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/401%20-%20Generic"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/403%20-%20Generic"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/404%20-%20Generic"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/500%20-%20General"
+          }
+        }
+      },
+      "parameters" : [ {
+        "$ref" : "#/components/parameters/id"
+      } ]
+    },
+    "/api-definitions" : {
+      "get" : {
+        "summary" : "Search an API definition",
+        "description" : " User with granted access can search in the API definitions using filters.",
+        "parameters" : [ {
+          "name" : "sortBy",
+          "in" : "query",
+          "description" : "Change the sorting filter of the search results",
+          "schema" : {
+            "type" : "string",
+            "description" : "Change the sorting filter of the search results",
+            "default" : "lastUpdatedDate",
+            "enum" : [ "creationDate", "lastUpdatedDate", "name" ]
+          },
+          "example" : "name"
+        }, {
+          "name" : "lastUpdatedDateFrom",
+          "in" : "query",
+          "description" : "Filter projects by last updated date\n\nList all projects modified after `lastUpdatedDateFrom` (inclusive).",
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time",
+            "description" : "Filter projects by last updated date\n\nList all projects modified after `lastUpdatedDateFrom` (inclusive)."
+          }
+        }, {
+          "$ref" : "#/components/parameters/name"
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "Max number of expected responses",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "description" : "Max number of expected responses"
+          },
+          "example" : 20
+        }, {
+          "name" : "lastUpdatedDateTo",
+          "in" : "query",
+          "description" : "Filter projects by last updated date\n\nList all projects modified before `lastUpdatedDateTo` (inclusive)",
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time",
+            "description" : "Filter projects by last updated date\n\nList all projects modified before `lastUpdatedDateTo` (inclusive)"
+          }
+        }, {
+          "name" : "creationDateTo",
+          "in" : "query",
+          "description" : "Filter projects by creation date\n\nList all projects created before `creationDateTo` (inclusive)",
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time",
+            "description" : "Filter projects by creation date\n\nList all projects created before `creationDateTo` (inclusive)"
+          }
+        }, {
+          "name" : "sortOrder",
+          "in" : "query",
+          "description" : "Change the sorting order of the search results",
+          "schema" : {
+            "type" : "string",
+            "description" : "Change the sorting order of the search results",
+            "default" : "asc",
+            "enum" : [ "asc", "desc" ]
+          },
+          "example" : "asc"
+        }, {
+          "name" : "creationDateFrom",
+          "in" : "query",
+          "description" : "Filter projects by creation date\n\nList all projects created after `creationDateFrom` (inclusive)",
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time",
+            "description" : "Filter projects by creation date\n\nList all projects created after `creationDateFrom` (inclusive)"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Status 200",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/ApiDefinitionMetadata"
+                  }
+                },
+                "example" : "[\n  {\n   \"id\":\"95d709ad-da33-467f-88ea-e3bb8a629c82\",\n   \"name\":\"Task API\",\n   \"description\":\"Task API description\",\n   \"creationDate\":\"2019-07-05T08:59:45.712Z\",\n   \"lastUpdatedDate\":\"2019-07-05T08:59:45.712Z\",\n   \"creatorId\":\"db65aa86-2d8e-439b-a5aa-862d8e039bfd\",\n   \"lastUpdaterId\":\"db65aa86-2d8e-439b-a5aa-862d8e039bfd\",\n   \"sharings\":{\n      \"users\":[\n         {\n            \"userId\":\"db65aa86-2d8e-439b-a5aa-862d8e039bfd\",\n            \"level\":{\n               \"code\":\"OWNER\",\n               \"label\":\"Owner\",\n               \"order\":1\n            },\n            \"firstName\":\"Joe\",\n            \"lastName\":\"C\",\n            \"fullName\":\"Joe C\"\n         }\n      ],\n      \"groups\":[\n\n      ]\n   }\n}\n]"
+              }
+            }
+          },
+          "400" : {
+            "$ref" : "#/components/responses/400%20-%20Generic"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/401%20-%20Generic"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/403%20-%20Generic"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/500%20-%20General"
+          }
+        }
+      },
+      "post" : {
+        "summary" : "Create a new API definition",
+        "description" : "Create a new API definition in API Designer that you will own",
+        "parameters" : [ {
+          "name" : "format",
+          "in" : "query",
+          "description" : "The API definition format desired or passed in the input",
+          "schema" : {
+            "type" : "string",
+            "description" : "The API definition format desired or passed in the input",
+            "default" : "OpenApi3",
+            "enum" : [ "OpenApi3", "Swagger20", "Swagger12", "Raml10", "Raml08" ]
+          },
+          "example" : "OpenApi3"
+        }, {
+          "$ref" : "#/components/parameters/failOnWarnings"
+        }, {
+          "$ref" : "#/components/parameters/mainFile"
+        }, {
+          "$ref" : "#/components/parameters/Content-Type"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/One%20of%20all%20API%20definition%20formats"
+              }
+            },
+            "application/x-yaml" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/One%20of%20all%20API%20definition%20formats"
+              }
+            },
+            "application/zip" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/One%20of%20all%20API%20definition%20formats"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Status 201",
+            "headers" : {
+              "Location" : {
+                "description" : "URL of the new API definition.",
+                "schema" : {
+                  "type" : "string",
+                  "description" : "URL of the new API definition."
+                },
+                "example" : "${serverUrl}/api-definitions/bfc2b4b3-78fa-4f96-a3a8-d372865f1139"
+              }
+            },
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ApiDefinitionWriteResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "$ref" : "#/components/responses/400%20-%20Complete"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/401%20-%20Generic"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/403%20-%20Generic"
+          },
+          "412" : {
+            "$ref" : "#/components/responses/412%20-%20Fail%20on%20warnings"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/415%20-%20Designer"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/500%20-%20General"
+          }
+        }
+      }
+    },
+    "/api-definitions/{id}/sharings" : {
+      "get" : {
+        "summary" : "Get sharing configuration of an API definition",
+        "description" : "Retrieve all the users and groups that have access to the API definition (along with their access level)",
+        "responses" : {
+          "200" : {
+            "description" : "Status 200",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SharingSet"
+                }
+              }
+            }
+          },
+          "400" : {
+            "$ref" : "#/components/responses/400%20-%20API%20definition%20ID"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/401%20-%20Generic"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/403%20-%20Generic"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/404%20-%20Generic"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/500%20-%20General"
+          }
+        }
+      },
+      "put" : {
+        "summary" : "Update sharing configuration of an API definition",
+        "description" : "Set the users and groups that should be granted access to this API definition",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SharingSet"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "204" : {
+            "description" : "Status 204"
+          },
+          "400" : {
+            "description" : "- the payload doesn't contains required data",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "required" : [ "message", "status" ],
+                  "properties" : {
+                    "message" : {
+                      "type" : "string"
+                    },
+                    "status" : {
+                      "type" : "string",
+                      "description" : "**Value:** 400"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "$ref" : "#/components/responses/401%20-%20Generic"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/403%20-%20Generic"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/404%20-%20Generic"
+          },
+          "422" : {
+            "description" : "Status 422",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "object",
+                  "required" : [ "messages", "status" ],
+                  "properties" : {
+                    "messages" : {
+                      "type" : "array",
+                      "items" : {
+                        "type" : "object",
+                        "properties" : {
+                          "message" : {
+                            "type" : "string"
+                          },
+                          "location" : {
+                            "type" : "string"
+                          },
+                          "type" : {
+                            "type" : "string"
+                          },
+                          "field" : {
+                            "type" : "string"
+                          }
+                        }
+                      }
+                    },
+                    "status" : {
+                      "type" : "integer"
+                    }
+                  }
+                },
+                "example" : "{\n  \"messages\": [\n    {\n      \"message\": \"string\",\n      \"location\": \"string\",\n      \"type\": \"string\",\n      \"field\": \"string\"\n    }\n  ],\n  \"status\": 422\n}"
+              }
+            }
+          },
+          "500" : {
+            "$ref" : "#/components/responses/500%20-%20General"
+          }
+        }
+      },
+      "parameters" : [ {
+        "$ref" : "#/components/parameters/id"
+      } ]
+    },
+    "/api-definitions/{id}/metadata" : {
+      "get" : {
+        "summary" : "Fetch an API definition metadata",
+        "responses" : {
+          "200" : {
+            "description" : "Status 200",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ApiDefinitionMetadata"
+                }
+              }
+            }
+          },
+          "400" : {
+            "$ref" : "#/components/responses/400%20-%20API%20definition%20ID"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/401%20-%20Generic"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/403%20-%20Generic"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/404%20-%20Generic"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/500%20-%20General"
+          }
+        }
+      },
+      "parameters" : [ {
+        "$ref" : "#/components/parameters/id"
+      } ]
+    },
+    "/api-definitions/sharings/eligibles" : {
+      "get" : {
+        "summary" : "Get eligible users and groups",
+        "description" : "Returns the users and groups that the user can share an API definition to",
+        "responses" : {
+          "200" : {
+            "description" : "Status 200",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SharingEligibles"
+                }
+              }
+            }
+          },
+          "401" : {
+            "$ref" : "#/components/responses/401%20-%20Generic"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/403%20-%20Generic"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/500%20-%20General"
+          }
+        }
+      }
+    },
+    "/api-definitions/{id}/audit" : {
+      "get" : {
+        "summary" : "Fetch the export audit of an API definition",
+        "parameters" : [ {
+          "name" : "format",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "OpenApi3Aws", "Swagger20Azure" ]
+          },
+          "example" : "OpenApi3Aws"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Status 200",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/ApiDefinitionMessage"
+                  }
+                },
+                "example" : "[\n  {\n   \"message\":\"The base URLs must be absolute. The server 'serverUrl' is ignored.\",\n   \"code\":\"OAS3_IMPORT_RELATIVE_PATH_SERVER\",\n   \"field\":\"Server 1\",\n   \"type\":\"warning\"\n}\n]"
+              },
+              "application/x-yaml" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/ApiDefinitionMessage"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "$ref" : "#/components/responses/400%20-%20Generic"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/401%20-%20Generic"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/403%20-%20Generic"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/404%20-%20Generic"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/415%20-%20Designer"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/500%20-%20General"
+          }
+        }
+      },
+      "parameters" : [ {
+        "name" : "id",
+        "in" : "path",
+        "required" : true,
+        "schema" : {
+          "type" : "string"
+        }
+      } ]
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "ApiDefinitionMetadata" : {
+        "type" : "object",
+        "required" : [ "creationDate", "creatorId", "id", "lastUpdatedDate", "lastUpdaterId", "name", "sharings" ],
+        "description" : "Summarized representation of an API definition",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "API definition ID",
+            "example" : "95d709ad-da33-467f-88ea-e3bb8a629c82"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "API definition name",
+            "example" : "Task API"
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "API definition description",
+            "example" : "Task API description"
+          },
+          "creatorId" : {
+            "type" : "string",
+            "description" : "User ID of the creator.",
+            "example" : "db65aa86-2d8e-439b-a5aa-862d8e039bfd"
+          },
+          "lastUpdaterId" : {
+            "type" : "string",
+            "description" : "User ID of the last updater.",
+            "example" : "db65aa86-2d8e-439b-a5aa-862d8e039bfd"
+          },
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "lastUpdatedDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "sharings" : {
+            "$ref" : "#/components/schemas/SharingSet"
+          }
+        },
+        "example" : "{\n   \"id\":\"95d709ad-da33-467f-88ea-e3bb8a629c82\",\n   \"name\":\"Task API\",\n   \"description\":\"Task API description\",\n   \"creationDate\":\"2019-07-05T08:59:45.712Z\",\n   \"lastUpdatedDate\":\"2019-07-05T08:59:45.712Z\",\n   \"creatorId\":\"db65aa86-2d8e-439b-a5aa-862d8e039bfd\",\n   \"lastUpdaterId\":\"db65aa86-2d8e-439b-a5aa-862d8e039bfd\",\n   \"sharings\":{\n      \"users\":[\n         {\n            \"userId\":\"db65aa86-2d8e-439b-a5aa-862d8e039bfd\",\n            \"level\":{\n               \"code\":\"OWNER\",\n               \"label\":\"Owner\",\n               \"order\":1\n            },\n            \"firstName\":\"Joe\",\n            \"lastName\":\"C\",\n            \"fullName\":\"Joe C\"\n         }\n      ],\n      \"groups\":[\n\n      ]\n   }\n}"
+      },
+      "OAS3.0" : {
+        "type" : "object",
+        "description" : "See specifications in order to find the entire description of the format.\n\n**Specifications:** [OpenAPI Specifications](https://github.com/OAI/OpenAPI-Specification)"
+      },
+      "OAS-Swagger2.0" : {
+        "type" : "object",
+        "description" : "See specifications in order to find the entiere description of the format.\n\n**Specifications:**  [OAS/Swagger 2.0 specifications](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md)"
+      },
+      "Swagger1.2" : {
+        "type" : "object",
+        "description" : "See specifications in order to find the entiere description of the format.\n\n**Specifications:**  [Swagger 1.2 specifications](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/1.2.md)"
+      },
+      "RAML1.0" : {
+        "type" : "object",
+        "description" : "See specifications in order to find the entiere description of the format.\n\n**Specifications:**  [RAML 1.0 Specifications](https://github.com/raml-org/raml-spec/blob/master/versions/raml-10/raml-10.md)"
+      },
+      "RAML0.8" : {
+        "type" : "object",
+        "description" : "See specifications in order to find the entiere description of the format\n\n**Specifications:**  [RAML 0.8 Specifications](https://github.com/raml-org/raml-spec/blob/master/versions/raml-08/raml-08.md)"
+      },
+      "OAS-Swagger2.0-for-Azure" : {
+        "type" : "object",
+        "description" : "See Azure gateway documentation"
+      },
+      "OAS3.0-for-AWS" : {
+        "type" : "object",
+        "description" : "See AWS Gateway documentation"
+      },
+      "One of all API definition formats" : {
+        "oneOf" : [ {
+          "$ref" : "#/components/schemas/OAS-Swagger2.0"
+        }, {
+          "$ref" : "#/components/schemas/OAS3.0"
+        }, {
+          "$ref" : "#/components/schemas/RAML0.8"
+        }, {
+          "$ref" : "#/components/schemas/RAML1.0"
+        }, {
+          "$ref" : "#/components/schemas/Swagger1.2"
+        }, {
+          "$ref" : "#/components/schemas/OAS3.0-for-AWS"
+        }, {
+          "$ref" : "#/components/schemas/OAS-Swagger2.0-for-Azure"
+        } ]
+      },
+      "SharingSet" : {
+        "type" : "object",
+        "required" : [ "groups", "users" ],
+        "description" : "A SharingSet is a representation of the users and groups that are allowed access to an API definition.\n\n**Important:** A list of users and a list of groups **must** be provided, even if it may be empty.\n\n**Data constraints:**\n- a SharingSet must contain a single owner (SharingLevel) and it must be a SharingUser (contained in `users` array)",
+        "properties" : {
+          "users" : {
+            "type" : "array",
+            "description" : "Users that have access to the API. \n\nNB: Must contain a user (and only one) with owner sharing level.",
+            "items" : {
+              "$ref" : "#/components/schemas/SharingUser"
+            }
+          },
+          "groups" : {
+            "type" : "array",
+            "description" : "Groups that have access to the API.",
+            "items" : {
+              "$ref" : "#/components/schemas/SharingGroup"
+            }
+          }
+        },
+        "example" : "{\n\t\"users\":\n\t    [\n\t        {\n                \"userId\": \"UUID-user2\",\n                \"lastName\": \"Doe\",\n                \"firstName\": \"John\",\n                \"level\": {\n                    \"code\": \"OWNER\",\n                    \"label\": \"Owner\",\n                    \"order\": 1\n                 }\n    \t\t}\n        ],\n\t\"groups\":\n        [\n            {\n                \"groupId\": \"UUID-group1\",\n                \"groupName\": \"Human resources\",\n                \"level\": {\n                    \"code\": \"WRITER\",\n                    \"label\": \"Editor\",\n                    \"order\": 2\n                }\n            }\n        ],\n    \"tenantSharing\": []\n}"
+      },
+      "SharingLevel" : {
+        "type" : "object",
+        "required" : [ "code", "label", "order" ],
+        "description" : "Describes the permissions that a user or group possesses on an API definition.",
+        "properties" : {
+          "code" : {
+            "type" : "string",
+            "enum" : [ "WRITER", "OWNER" ]
+          },
+          "label" : {
+            "type" : "string",
+            "readOnly" : true
+          },
+          "order" : {
+            "type" : "integer",
+            "format" : "int32",
+            "readOnly" : true
+          }
+        },
+        "example" : "{\n  \"code\": \"WRITER\",\n  \"label\": \"Editor\",\n  \"order\": 2\n}"
+      },
+      "SharingGroup" : {
+        "type" : "object",
+        "required" : [ "groupId", "level" ],
+        "description" : "Describes a group of users.",
+        "properties" : {
+          "groupId" : {
+            "type" : "string"
+          },
+          "groupName" : {
+            "type" : "string",
+            "readOnly" : true
+          },
+          "level" : {
+            "$ref" : "#/components/schemas/SharingLevel"
+          }
+        },
+        "example" : "{\n   \"groupId\":\"UUID-group1\",\n   \"groupName\":\"Human resources\",\n   \"level\":{\n      \"code\":\"WRITER\",\n      \"label\":\"Editor\",\n      \"order\":2\n   }\n}"
+      },
+      "SharingUser" : {
+        "type" : "object",
+        "required" : [ "firstName", "lastName", "level", "userId" ],
+        "description" : "Describe a user",
+        "properties" : {
+          "userId" : {
+            "type" : "string"
+          },
+          "lastName" : {
+            "type" : "string",
+            "readOnly" : true
+          },
+          "firstName" : {
+            "type" : "string",
+            "readOnly" : true
+          },
+          "level" : {
+            "$ref" : "#/components/schemas/SharingLevel"
+          }
+        },
+        "example" : "{\n   \"userId\":\"UUID-user2\",\n   \"lastName\":\"Doe\",\n   \"firstName\":\"John\",\n   \"level\":{\n      \"code\":\"OWNER\",\n      \"label\":\"Owner\",\n      \"order\":1\n   }\n}"
+      },
+      "SharingEligibles" : {
+        "type" : "object",
+        "required" : [ "groups", "tenantSharing", "users" ],
+        "description" : "The users and groups that you can share an API definition with",
+        "properties" : {
+          "users" : {
+            "type" : "array",
+            "items" : {
+              "type" : "object",
+              "required" : [ "firstName", "lastName", "userId" ],
+              "properties" : {
+                "userId" : {
+                  "type" : "string"
+                },
+                "lastName" : {
+                  "type" : "string"
+                },
+                "firstName" : {
+                  "type" : "string"
+                }
+              },
+              "example" : "{\n    \"userId\": \"UUID-user2\",\n    \"lastName\": \"Doe\",\n    \"firstName\": \"John\"\n}"
+            }
+          },
+          "groups" : {
+            "type" : "array",
+            "items" : {
+              "type" : "object",
+              "required" : [ "groupId", "groupName" ],
+              "properties" : {
+                "groupId" : {
+                  "type" : "string"
+                },
+                "groupName" : {
+                  "type" : "string"
+                }
+              },
+              "example" : " {\n    \"groupId\": \"UUID-group1\",\n    \"groupName\": \"Human resources\"\n}"
+            }
+          },
+          "tenantSharing" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        },
+        "example" : "{\n\t\"users\":\n\t    [\n\t        {\n                \"userId\": \"UUID-user2\",\n                \"lastName\": \"Doe\",\n                \"firstName\": \"John\"\n    \t\t},\n            {\n                \"userId\": \"UUID-user3\",\n                \"lastName\": \"Stane\",\n                \"firstName\": \"Bob\"\n            }\n        ],\n\t\"groups\":\n        [\n            {\n                \"groupId\": \"UUID-group1\",\n                \"groupName\": \"Human resources\"\n            },\n            {\n                \"groupId\": \"UUID-group2\",\n                \"groupName\": \"Sales\"\n            }\n        ],\n    \"tenantSharing\":[]        \n}"
+      },
+      "ApiDefinitionWriteResponse" : {
+        "type" : "object",
+        "required" : [ "metadata", "validationMessages" ],
+        "properties" : {
+          "metadata" : {
+            "$ref" : "#/components/schemas/ApiDefinitionMetadata"
+          },
+          "validationMessages" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ApiDefinitionMessage"
+            }
+          }
+        },
+        "example" : "{\n   \"metadata\":{\n      \"id\":\"008ea8c1-75b5-409e-a930-2b0f49508e86\",\n      \"name\":\"Test\",\n      \"creationDate\":\"2019-07-05T10:20:08.576Z\",\n      \"lastUpdatedDate\":\"2019-07-05T10:20:08.576Z\",\n      \"sharings\":{\n         \"users\":[\n            {\n               \"userId\":\"db65aa86-2d8e-439b-a5aa-862d8e039bfd\",\n               \"level\":{\n                  \"code\":\"OWNER\",\n                  \"label\":\"Propriétaire\",\n                  \"order\":1\n               },\n               \"firstName\":\"Pierre\",\n               \"lastName\":\"C\",\n               \"fullName\":\"Pierre C\"\n            }\n         ],\n         \"groups\":[\n\n         ]\n      }\n   },\n   \"validationMessages\":[\n      {\n         \"message\":\"The base URLs must be absolute. The server 'serverUrl' is ignored.\",\n         \"code\":\"OAS3_IMPORT_RELATIVE_PATH_SERVER\",\n         \"field\":\"Server 1\",\n         \"type\":\"warning\"\n      }\n   ]\n}"
+      },
+      "ApiDefinitionMessage" : {
+        "type" : "object",
+        "required" : [ "code", "message", "type" ],
+        "properties" : {
+          "message" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "info", "warning", "error" ]
+          },
+          "code" : {
+            "type" : "string"
+          },
+          "field" : {
+            "type" : "string"
+          },
+          "location" : {
+            "type" : "string"
+          }
+        },
+        "example" : "{\n   \"message\":\"The base URLs must be absolute. The server 'serverUrl' is ignored.\",\n   \"code\":\"OAS3_IMPORT_RELATIVE_PATH_SERVER\",\n   \"field\":\"Server 1\",\n   \"type\":\"warning\"\n}"
+      }
+    },
+    "responses" : {
+      "400 - Generic" : {
+        "description" : "- The API definition ID is malformed (see your resource path)\n- The format contained in the request body is invalid according to the *format* or *media type* parameters\n- The API definition contained in the request body is invalid according to the format specifications\n- The wanted output does not exist, the combination of format, data type and extensions is impossible",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "type" : "object",
+              "required" : [ "message", "status" ],
+              "properties" : {
+                "message" : {
+                  "type" : "string",
+                  "description" : "Error message that explains the reason why the error occurs"
+                },
+                "status" : {
+                  "type" : "integer",
+                  "description" : "**Value:** `400`"
+                },
+                "validationMessages" : {
+                  "$ref" : "#/components/schemas/ApiDefinitionMessage"
+                }
+              }
+            },
+            "example" : "{\n\"status\": 400,\n\"message\": \"Bad request\"\n}"
+          }
+        }
+      },
+      "400 - API definition ID" : {
+        "description" : "- The API definition ID is malformed (see your resource path)",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "type" : "object",
+              "required" : [ "message", "status" ],
+              "properties" : {
+                "message" : {
+                  "type" : "string",
+                  "description" : "Error message that explains the reason why the error occurs"
+                },
+                "status" : {
+                  "type" : "integer",
+                  "description" : "**Value:** `400`"
+                }
+              }
+            },
+            "example" : "{\n\"status\": 400,\n\"message\": \"Bad request\"\n}"
+          }
+        }
+      },
+      "400 - Complete" : {
+        "description" : "- The API definition ID is malformed (see your resource path)\n- The format contained in the request body is invalid according to the *format* or *media type* parameters\n- The API definition contained in the request body is invalid according to the format specifications\n- The wanted output does not exist, the combination of format, data type and extensions is impossible\n- The specified main file is not found",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "type" : "object",
+              "required" : [ "message", "status" ],
+              "properties" : {
+                "message" : {
+                  "type" : "string",
+                  "description" : "Error message that explains the reason why the error occurs"
+                },
+                "status" : {
+                  "type" : "integer",
+                  "description" : "**Value:** `400`"
+                },
+                "validationMessages" : {
+                  "$ref" : "#/components/schemas/ApiDefinitionMessage"
+                }
+              }
+            },
+            "example" : "{\n\"status\": 400,\n\"message\": \"Bad request\"\n}"
+          }
+        }
+      },
+      "401 - Generic" : {
+        "description" : "- Authentication token is required",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "status" : {
+                  "type" : "string",
+                  "example" : "401"
+                }
+              }
+            },
+            "example" : "{\n\"status\": 401\n}"
+          }
+        }
+      },
+      "403 - Generic" : {
+        "description" : "- User is not authorized to make this action (check user account roles)\n- User tries to access data that he does not have access to",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "type" : "object",
+              "required" : [ "message", "status" ],
+              "properties" : {
+                "message" : {
+                  "type" : "string",
+                  "example" : "Not authorized"
+                },
+                "status" : {
+                  "type" : "string",
+                  "description" : "**Value:** 403",
+                  "example" : "403"
+                }
+              }
+            },
+            "example" : "{\n\"status\": 403,\n\"message\": \"Forbidden\"\n}"
+          }
+        }
+      },
+      "404 - Generic" : {
+        "description" : "The API definition was not found",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "type" : "object",
+              "required" : [ "status" ],
+              "properties" : {
+                "status" : {
+                  "type" : "integer",
+                  "description" : "**Value:** 404"
+                }
+              }
+            },
+            "example" : "{\n\"status\": 404,\n\"message\": \"Not found\"\n}"
+          }
+        }
+      },
+      "415 - Designer" : {
+        "description" : "- if the media-type is not supported by the API format (see Content-Type description)\n- if the media-type is not supported (not present in the available list)",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "type" : "object",
+              "required" : [ "message", "status" ],
+              "properties" : {
+                "message" : {
+                  "type" : "string"
+                },
+                "status" : {
+                  "type" : "string",
+                  "default" : "415"
+                }
+              }
+            },
+            "example" : "{\n\"message\": \"Unsupported Media Type\",\n\"status\": 415\n}"
+          }
+        }
+      },
+      "500 - General" : {
+        "description" : "An unexpected error occurred while executing your action",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "type" : "object",
+              "required" : [ "status" ],
+              "properties" : {
+                "message" : {
+                  "type" : "string"
+                },
+                "status" : {
+                  "type" : "integer",
+                  "description" : "**Value:** `500`"
+                }
+              }
+            },
+            "example" : "{\n\"message\": \"Server error\",\n\"status\": 500\n}"
+          }
+        }
+      },
+      "412 - Fail on warnings" : {
+        "description" : "412 - Fail on warnings",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "message" : {
+                  "type" : "string"
+                },
+                "status" : {
+                  "type" : "string",
+                  "default" : "412"
+                },
+                "validationMessages" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/ApiDefinitionMessage"
+                  }
+                }
+              }
+            },
+            "example" : "{\n   \"validationMessages\":[\n      {\n         \"message\":\"The base URLs must be absolute. The server 'serverUrl' is ignored.\",\n         \"code\":\"OAS3_IMPORT_RELATIVE_PATH_SERVER\",\n         \"field\":\"Server 1\",\n         \"type\":\"warning\"\n      }\n   ],\n   \"message\":\"The import of the API definition generated 1 warning message(s)\",\n   \"status\":412\n}"
+          }
+        }
+      }
+    },
+    "parameters" : {
+      "format" : {
+        "name" : "format",
+        "in" : "query",
+        "required" : false,
+        "description" : "The API definition output format",
+        "schema" : {
+          "type" : "string",
+          "description" : "The API definition output format",
+          "default" : "OpenApi3",
+          "enum" : [ "OpenApi3", "Swagger20", "Swagger12", "Raml10", "Raml08", "OpenApi3Aws", "Swagger20Azure" ]
+        },
+        "example" : "OpenApi3"
+      },
+      "talendExtensions" : {
+        "name" : "talendExtensions",
+        "in" : "query",
+        "required" : false,
+        "description" : "Export (or not) Talend Extensions inside the API definition",
+        "schema" : {
+          "type" : "boolean",
+          "description" : "Export (or not) Talend Extensions inside the API definition",
+          "default" : false
+        },
+        "example" : true
+      },
+      "name" : {
+        "name" : "name",
+        "in" : "query",
+        "required" : false,
+        "description" : "Filter your results with the name of the API Definition\n\nThis filter allow to use a query language::\n- `*`: to replace 0 or more characters\n- `?`: to replace 1 characters\n- `\\\\`: use to escape a `*`or `?`\n\n**Examples:**\n - `a*a` -> return: all API definitions with a name that begins and ends with “a”\n - `*a` -> return: all API definitions with a name that ends with “a”\n - `a*` -> return: all API definitions with a name that begins with “a”\n - `a`-> return: all API definitions with the name equals to “a”\n - `a\\\\\\*` -> return: all API definitions with the name equals to “a\\*”",
+        "schema" : {
+          "type" : "string",
+          "description" : "Filter your results with the name of the API Definition\n\nThis filter allow to use a query language::\n- `*`: to replace 0 or more characters\n- `?`: to replace 1 characters\n- `\\\\`: use to escape a `*`or `?`\n\n**Examples:**\n - `a*a` -> return: all API definitions with a name that begins and ends with “a”\n - `*a` -> return: all API definitions with a name that ends with “a”\n - `a*` -> return: all API definitions with a name that begins with “a”\n - `a`-> return: all API definitions with the name equals to “a”\n - `a\\\\\\*` -> return: all API definitions with the name equals to “a\\*”"
+        },
+        "example" : "my_name"
+      },
+      "failOnWarnings" : {
+        "name" : "failOnWarnings",
+        "in" : "query",
+        "required" : false,
+        "description" : "Stop the process at the first warning on model transformation",
+        "schema" : {
+          "type" : "boolean",
+          "description" : "Stop the process at the first warning on model transformation",
+          "default" : false
+        },
+        "example" : true
+      },
+      "mainFile" : {
+        "name" : "mainFile",
+        "in" : "query",
+        "required" : false,
+        "description" : "Name of the main API definition file when importing a multi-file definition (a ZIP file)",
+        "schema" : {
+          "type" : "string",
+          "description" : "Name of the main API definition file when importing a multi-file definition (a ZIP file)"
+        },
+        "example" : "file.json"
+      },
+      "Content-Type" : {
+        "name" : "Content-Type",
+        "in" : "header",
+        "required" : true,
+        "description" : "The input format of the API contract",
+        "schema" : {
+          "type" : "string",
+          "description" : "The input format of the API contract",
+          "enum" : [ "application/x-yaml", "application/json", "application/zip" ]
+        },
+        "example" : "application/json"
+      },
+      "Accept" : {
+        "name" : "Accept",
+        "in" : "header",
+        "required" : false,
+        "description" : "The output format of the API contract\n\nThe data is not required and the default value depends on the API format itself for the following:\n\n- **OpenApi3** API definition format: application/json\n- **Swagger20** API definition format: application/json\n- **Swagger12** API definition format: application/zip\n- **Raml** API definition format: application/x-yaml",
+        "schema" : {
+          "type" : "string",
+          "description" : "The output format of the API contract\n\nThe data is not required and the default value depends on the API format itself for the following:\n\n- **OpenApi3** API definition format: application/json\n- **Swagger20** API definition format: application/json\n- **Swagger12** API definition format: application/zip\n- **Raml** API definition format: application/x-yaml",
+          "enum" : [ "application/x-yaml", "application/json", "application/zip" ]
+        },
+        "example" : "application/json"
+      },
+      "id" : {
+        "name" : "id",
+        "in" : "path",
+        "required" : true,
+        "description" : "API definition ID\n\n**Format:** [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier)",
+        "schema" : {
+          "type" : "string",
+          "description" : "API definition ID\n\n**Format:** [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier)"
+        },
+        "example" : "a609483f-72a5-4937-a1be-243cb507fffb"
+      }
+    },
+    "securitySchemes" : {
+      "Personal Access Token" : {
+        "type" : "apiKey",
+        "description" : "This API is secured by a Personal Access Token. To generate one see the [Talend Cloud documentation](https://help.talend.com/reader/I48H6c~0i42r2CnSb9d3tw/62smZ0FMeL~wFkFI6Bck4Q)",
+        "in" : "header",
+        "name" : "Authorization"
+      }
+    }
+  }
+}
