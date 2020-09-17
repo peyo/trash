@@ -1,0 +1,41 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "sscce",
+    "description" : "sscce",
+    "version" : "1.0"
+  },
+  "paths" : {
+    "/foo" : {
+      "post" : {
+        "summary" : "DDDD",
+        "requestBody" : {
+          "content" : {
+            "*/*" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Pet"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "foo"
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Pet" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          }
+        }
+      }
+    }
+  }
+}
