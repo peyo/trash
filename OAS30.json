@@ -1163,7 +1163,7 @@
     "securitySchemes" : {
       "Personal Access Token" : {
         "type" : "apiKey",
-        "description" : "This API is secured by a Personal Access Token. To generate one see the [Talend Cloud documentation](https://help.talend.com/reader/I48H6c~0i42r2CnSb9d3tw/62smZ0FMeL~wFkFI6Bck4Q)",
+        "description" : "This API rr is secured by a Personal Access Token. To generate one see the [Talend Cloud documentation](https://help.talend.com/reader/I48H6c~0i42r2CnSb9d3tw/62smZ0FMeL~wFkFI6Bck4Q)",
         "in" : "header",
         "name" : "Authorization"
       }
